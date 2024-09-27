@@ -1,34 +1,39 @@
 "use strict"
 
 const form = document.querySelector("#form");
-const authorInput = document.querySelector("#author");
-const titleInput = document.querySelector("#title");
-const yearInput = document.querySelector("#year");
+const table = document.querySelector("#table");
 
-const tbody = document.querySelector("#tbody");
+const musicArr = []; // Array for storing the cd's
 
-const musicArr = [];
-
-// function for submitting the form
+// eventlistener submitting the form
 form.addEventListener("submit", (e)=>{
-e.preventDefault();
-const generateRandomId = Math.random(); // Generating a random id
+    e.preventDefault();
 
-musicArr.push({
-    author : authorInput.value,
-    title : titleInput.value,
-    year : yearInput.value,
-    id : generateRandomId
-});
+    const generateRandomId = Math.random(); // Generating a random id
+    const authorInput = e.target.author.value;
+    const titleInput = e.target.title.value;
+    const yearInput = e.target.year.value;
 
-form.reset(); // resetting the form
+    musicArr.push({
+        author : authorInput,
+        title : titleInput,
+        year : yearInput,
+        id : generateRandomId
+    });
 
-createTable(); // create the table with all items from musicArr
+    //form.reset(); // Resetting the form. Here I'm interacting with the page, which we should avoid doing a lot
+    e.target.reset(); // Here I'm using the event instead
 
+    createTable(); // create the table with all items from musicArr
 });
 
 function createTable() {
-    tbody.innerHTML = ""; // clear the table, make it ready to be created (again)
+    const tbody = document.createElement("tbody"); // Creating the tbody
+    
+    const does_tbody_exist = document.querySelector("tbody"); // Checking if there already exists a tbody, and removing it if yes
+    if (does_tbody_exist){
+        does_tbody_exist.remove();
+    }
 
     musicArr.forEach(cd => {
         const newRow = document.createElement("tr");
@@ -49,9 +54,9 @@ function createTable() {
         deleteData.append(deleteBtn);
 
         newRow.append(authorData, titleData, yearData, deleteData);
-
         tbody.append(newRow);
     });
+    table.append(tbody); // appending the tbody to the table
 };
 
 function deleteCd(deleteBtn) {
